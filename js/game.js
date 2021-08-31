@@ -13,6 +13,13 @@ fg.src = "img/fg.png"
 pipeUp.src = "img/pipeUp.png"
 pipeBottom.src = "img/pipeBottom.png"
 
+// Звуковые файлы
+let fly = new Audio();
+let score_audio = new Audio();
+
+fly.src = "audio/fly.mp3";
+score_audio.src = "audio/score.mp3";
+
 
 let gap = 90; // Отступ между трубами
 
@@ -20,7 +27,8 @@ let gap = 90; // Отступ между трубами
 document.addEventListener("keydown", moveUp);
 
 function moveUp(){
-    yPos -= 20;
+    yPos -= 25;
+    fly.play();
 }
 
 // Создание блоков
@@ -34,24 +42,45 @@ pipe[0] = { // Координаты нового блока
 // Позиция птички
 let xPos = 10; 
 let yPos = 150;
-let grav = 1; // Скорость падения птицы
+let grav = 1.5; // Скорость падения птицы
+let score = 0; 
 
 function draw(){
     // Отрисовка картинок
     ctx.drawImage(bg, 0, 0);
 
+    
     for(let i = 0; i < pipe.length; i++){
+        // Отрисовка новых блоков
+        console.log(pipe[i].x);
         ctx.drawImage(pipeUp, pipe[i].x, pipe[i].y);
         ctx.drawImage(pipeBottom, pipe[i].x, pipe[i].y + pipeUp.height + gap);
 
+        // Передвижение блоков по х
         pipe[i].x--; //?
         
-
+        // Внесение новых блоков в массив блоков
         if(pipe[i].x == 125){
             pipe.push({
                 x: cvs.width,
                 y: Math.floor(Math.random() * pipeUp.height) - pipeUp.height,
             });
+        }
+
+        // Отслеживание прикосновений
+        if(xPos + bird.width >= pipe[i].x 
+            && xPos <= pipe[i].x + pipeUp.width 
+            && (yPos <= pipe[i].y + pipeUp.height 
+                || yPos + bird.height >= pipe[i].y + pipeUp.height + gap) 
+                || yPos + bird.height >= cvs.height - fg.height){
+                    location.reload(); // Перезагрузка страницы
+                } 
+        
+
+        // Начисление очков
+        if(pipe[i].x == 5){
+            score++;
+            score_audio.play();
         }
     }
     
@@ -62,6 +91,11 @@ function draw(){
 
     // Поведение птицы
     yPos += 1;
+
+    ctx.fillStyle = "#000";
+    ctx.font = "24px Verdana";
+    ctx.fillText("Счет: " + score, 10, 25);
+
     requestAnimationFrame(draw);
 }
 
