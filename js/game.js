@@ -26,6 +26,10 @@ function moveUp(){
 // Создание блоков
 let pipe = [];
 
+pipe[0] = { // Координаты нового блока
+    x: cvs.width,
+    y: 0,
+}
 
 // Позиция птички
 let xPos = 10; 
@@ -36,8 +40,21 @@ function draw(){
     // Отрисовка картинок
     ctx.drawImage(bg, 0, 0);
 
-    ctx.drawImage(pipeUp, 100, 0);
-    ctx.drawImage(pipeBottom, 100, 0 + pipeUp.height + gap);
+    for(let i = 0; i < pipe.length; i++){
+        ctx.drawImage(pipeUp, pipe[i].x, pipe[i].y);
+        ctx.drawImage(pipeBottom, pipe[i].x, pipe[i].y + pipeUp.height + gap);
+
+        pipe[i].x--; //?
+        
+
+        if(pipe[i].x == 125){
+            pipe.push({
+                x: cvs.width,
+                y: Math.floor(Math.random() * pipeUp.height) - pipeUp.height,
+            });
+        }
+    }
+    
 
     ctx.drawImage(fg, 0, cvs.height - fg.height);
 
