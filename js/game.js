@@ -1,3 +1,5 @@
+let buttonStart = document.getElementById("button-start"); 
+
 let cvs = document.getElementById("canvas"); // Элемент canvas
 let ctx = cvs.getContext("2d"); // Вид игры
 
@@ -21,15 +23,32 @@ fly.src = "audio/fly.mp3";
 score_audio.src = "audio/score.mp3";
 
 
-let gap = 90; // Отступ между трубами
+let gap = 105; // Отступ между трубами
 
 // При нажатии на какую-либо кнопку
-document.addEventListener("keydown", moveUp);
+document.onkeydown = checkKey;
 
-function moveUp(){
-    yPos -= 25;
-    fly.play();
+function checkKey(e) {
+
+    e = e || window.event;
+
+    if (e.keyCode == '38') {
+        yPos -= 35;
+        fly.play();
+    }
+    else if (e.keyCode == '40') {
+        yPos += 35;
+        fly.play();
+    }
 }
+
+// document.addEventListener("keydown", moveUp);
+
+// function moveUp(){
+//     yPos -= 35;
+//     fly.play();
+// }
+
 
 // Создание блоков
 let pipe = [];
@@ -42,7 +61,7 @@ pipe[0] = { // Координаты нового блока
 // Позиция птички
 let xPos = 10; 
 let yPos = 150;
-let grav = 1.5; // Скорость падения птицы
+let grav = 3.5; // Скорость падения птицы
 let score = 0; 
 
 function draw(){
@@ -99,5 +118,8 @@ function draw(){
     requestAnimationFrame(draw);
 }
 
+buttonStart.onclick = function(){
+    draw();
+}
 
-pipeBottom.onload = draw;
+// pipeBottom.onload = draw;
